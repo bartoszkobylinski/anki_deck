@@ -1,6 +1,7 @@
 import genanki
 import random
 import docx
+import os
 
 
 def generate_anki_package(questions_and_answers):
@@ -54,6 +55,13 @@ def create_data_with_question_and_answer(filename):
         data.append({"Question": question, "Answer": answer})
 
     return data
+
+
+def get_filenames_list():
+    path = '/Users/bartoszkobylinski/Programming/Python/anki'
+    files = os.listdir(path)
+    docx_files = [file for file in files if file.endswith('.docx')]
+    return docx_files
 
 
 
