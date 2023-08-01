@@ -34,27 +34,27 @@ def generate_anki_package(questions_and_answers):
     return package
 
 
-def create_data_with_question_and_answer(filename):
-    doc = docx.Document(filename)
+def create_data_with_question_and_answer(filenames):
+    question_and_answer_list = []
+    for filename in filenames:
+        doc = docx.Document(filename)
+        current_question = ''
+        current_answer = ''
+        for table in doc.tables:
+            for row in table.rows:
+                question_cell = row.cells[0]
+                answer_cell = row.cells[1]
+                if question_cell.text.strip():
+                    current_question = question_cell.text.strip().split('\n')
+                    print(f"to jest quest: {current_question}")
+                if answer_cell.text.strip():
+                    current_answer = answer_cell.text.strip().split('\n')
+                    print(f"to jest answe: {current_answer}")
 
-    data = []
-    current_question = ''
-    current_answer = ''
-    for table in doc.tables:
-        for row in table.rows:
-            question_cell = row.cells[0]
-            answer_cell = row.cells[1]
-            if question_cell.text.strip():
-                current_question = question_cell.text.strip().split('\n')
-                print(f"to jest quest: {current_question}")
-            if answer_cell.text.strip():
-                current_answer = answer_cell.text.strip().split('\n')
-                print(f"to jest answe: {current_answer}")
+        for question, answer in zip(current_question, current_answer):
+            question_and_answer_list.append({"Question": question, "Answer": answer})
 
-    for question, answer in zip(current_question, current_answer):
-        data.append({"Question": question, "Answer": answer})
-
-    return data
+    return question_and_answer_list
 
 
 def get_filenames_list():
@@ -64,9 +64,9 @@ def get_filenames_list():
     return docx_files
 
 
-
 if __name__ == "__main__":
 
-    data = create_data_with_question_and_answer('07.03.2023.docx')
-    print(data)
-    generate_anki_package(data)
+    files_list = get_filenames_list()
+    anki_deck = create_data_with_question_and_answer(files_list)
+    print(anki_deck)
+    generate_anki_package(anki_deck)
